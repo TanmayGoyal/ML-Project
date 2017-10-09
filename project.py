@@ -9,6 +9,9 @@ from sklearn import svm, datasets
 
 def get_file_data(str,delim):
 	with open(str) as data:
+		if i==0:
+			continue
+			
 		arr = data
 		arr = arr.read()
 
