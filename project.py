@@ -20,7 +20,7 @@ def get_file_data(str,delim):
 
 	return arr
 
-def train(train_var,train_text):
+def train(train_var,train_text,g,m):
 	x = []
 	y = []
 
@@ -28,7 +28,7 @@ def train(train_var,train_text):
 
 	for i in train_var:
 		y.append((i[-1]))
-		
+
 		# i.pop(-1)
 		# i.pop(0)
 
@@ -58,23 +58,28 @@ def train(train_var,train_text):
 		i.pop(-1)
 		i.pop(0)
 
-		i.append(str((X_train[foo][0,:]).toarray().tolist()))
+		i.append(((X_train[foo][0,:]).toarray().tolist()))
 
 
-		
-		for k in i:
-			print type(k)
+
+		# for k in i:
+		# 	print type(k)
+		pl=[]
+		pl.append(g[i[0]])
+		pl.append(m[i[1]])
+		pl.append((X_train[foo][0,:]).toarray().tolist())
+
 		foo+=1
 
-		new_x.append(i)
+		new_x.append(pl)
 
 	# X_train_tf = tf_transformer.transform(matrix1)
 	# X_train_tfidf.shape
-	
+
 	return new_x,y,tfidf_vect
 
 
-def test(tfidf_vect,test_var,test_text):
+def test(tfidf_vect,test_var,test_text,g,m):
 	x = []
 
 	foo = 0
@@ -102,9 +107,12 @@ def test(tfidf_vect,test_var,test_text):
 	for i in test_var:
 		i.pop(0)
 
-		i.append(str(x[foo]))
-
-		new_x.append(i)
+		# i.append(str(x[foo]))
+		pl=[]
+		pl.append(g[i[0]])
+		pl.append(m[i[1]])
+		pl.append((x[foo][0,:]).toarray().tolist())
+		new_x.append(pl)
 		foo+=1
 
 	return new_x
@@ -177,7 +185,7 @@ def classifier(train_1,train_2,test):
 	# print "ID,class1,class2,class3,class4,class5,class6,class7,class8,class9"
 
 	# for i in range (0,len(arr)):
-		
+
 	# 	arr2 = ['0']*9
 	# 	# print arr[i]
 
@@ -191,6 +199,20 @@ def classifier(train_1,train_2,test):
 
 
 	# 	# print str(i) + ',' + str(arr[i])
+def hash(g,m,x):
+	cnt=len(g)
+	for i in x:
+		if i[1] not in g:
+			g[i[1]]=cnt
+			cnt+=1
+
+	cnt=len(m)
+	for i in x:
+		if i[2] not in g:
+			m[i[2]]=cnt
+			cnt+=1
+
+	return g,m
 
 
 def main ():
@@ -202,12 +224,17 @@ def main ():
 	train_var = get_file_data('training_variants',',')
 	test_var = get_file_data('stage2_test_variants.csv',',')
 
+	gene = dict()
+	mutation = dict()
+	gene,mutation=hash(gene,mutation,train_var)
+	gene,mutation=hash(gene,mutation,test_var)
 
+	# print gene
 	# train_text = get_train_text()
 
-	x_train,y_train,tfidf_vect = train(train_var,train_text)
+	x_train,y_train,tfidf_vect = train(train_var,train_text,gene,mutation)
 
-	x_test = test(tfidf_vect,test_var,test_text)
+	x_test = test(tfidf_vect,test_var,test_text,gene,mutation)
 	# x=0
 
 	classifier(x_train,y_train,x_test)
