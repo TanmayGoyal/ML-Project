@@ -6,6 +6,12 @@ __pycache__/
 # C extensions
 *.so
 
+# Plaintext
+test_text
+test_variants
+training_text
+training_variants
+
 # Distribution / packaging
 .Python
 env/
