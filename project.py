@@ -68,10 +68,9 @@ def train(train_var,train_text):
 
 		new_x.append(i)
 
-		break
-
 	# X_train_tf = tf_transformer.transform(matrix1)
 	# X_train_tfidf.shape
+	
 	return new_x,y,tfidf_vect
 
 
