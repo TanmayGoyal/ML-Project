@@ -11,6 +11,7 @@ test_text
 test_variants
 training_text
 training_variants
+*.csv
 
 # Distribution / packaging
 .Python
