@@ -6,6 +6,28 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 # from sklearn.svm import SVC
 from sklearn import svm, datasets
+from sklearn.datasets import fetch_20newsgroups
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
+from sklearn.decomposition import PCA
+from sklearn.pipeline import Pipeline
+import matplotlib.pyplot as plt
+
+
+def graph(X,Y):
+	# newsgroups_train = fetch_20newsgroups(subset='train',categories=['alt.atheism', 'sci.space'])
+	# print newsgroups_train.data
+	# pipeline = Pipeline([('vect', CountVectorizer()),('tfidf', TfidfTransformer()),])
+	# X = pipeline.fit_transform(newsgroups_train.data).todense()
+	print X.shape
+	X=X.todense()
+	print X.shape
+	pca = PCA(n_components=2).fit(X)
+	data2D = pca.transform(X)
+	print data2D
+	plt.scatter(data2D[:,0], data2D[:,1],c=Y)
+	plt.colorbar(ticks=range(10))
+	# plt.show()              #not required if using ipython notebook
+	plt.savefig("graph.png")
 
 def get_file_data(str,delim):
 	with open(str) as data:
@@ -28,7 +50,7 @@ def train(train_var,train_text):
 
 	for i in train_var:
 		y.append(str(i[-1]))
-		
+
 		i.pop(-1)
 		i.pop(0)
 
@@ -66,83 +88,22 @@ def test(tfidf_vect,arr,arr2):
 
 def classifier(train_1,train_2,test):
 
-	# print "hi"
 	clf = SVC(kernel = 'linear', probability = True)
 
-	# print (train_1).shape, len(train_2)
-
-	# for i in range(train_1.shape[0]):
-	# 	for j in range(train_1[i].shape[0]):
-	# 		print type(train_1[i][j])
-	# 		if train_1[i][j]!=0:
-	# 			print train_1[i][j]
-			# print train_1[i][j]
-	# clf = svm.LinearSVC()
 	for i in range(len(train_2)):
 		train_2[i]=int(train_2[i])
-	# print train_1
-	clf.fit(train_1,train_2)
-	# print "hey"
-	# arr = clf.predict(test)
-	# print clf.decision_function()
 
-	# # print "yo"
+	clf.fit(train_1,train_2)
+
 	print "ID,class1,class2,class3,class4,class5,class6,class7,class8,class9"
 
 	predictions = clf.predict_proba(test)
 
-
 	for i in range (0,len(predictions)):
-		# for k in range (0,len(predictions[i])):
-		# 	predictions[i][k] = str(predictions[i][k])
-
-		# print predictions[i]
-
-		# break
-
-		# print arr[i]
-
-		# arr2[int(arr[i])-1] = '1'
 		j=i+1
-		# print arr2
 		stri = ','.join(str(x) for x in predictions[i])
 
 		print str(j) + ',' + stri
-
-		# break
-
-		# print str(i) + ',' + str(arr[i])
-
-
-
-
-
-	# # print "hi"
-	# clf = LinearSVC()
-
-	# clf.fit(train_1,train_2)
-	# # print "hey"
-
-	# arr = clf.predict(test)
-
-	# # print "yo"
-	# print "ID,class1,class2,class3,class4,class5,class6,class7,class8,class9"
-
-	# for i in range (0,len(arr)):
-		
-	# 	arr2 = ['0']*9
-	# 	# print arr[i]
-
-	# 	arr2[int(arr[i])-1] = '1'
-	# 	j=i+1
-	# 	# print arr2
-	# 	stri = ','.join(arr2)
-
-	# 	print str(j) + ',' + stri
-
-
-
-	# 	# print str(i) + ',' + str(arr[i])
 
 
 def main ():
@@ -155,15 +116,11 @@ def main ():
 	test_var = get_file_data('stage2_test_variants.csv',',')
 
 
-	# train_text = get_train_text()
-
+	graph(x_train,y_train)
 	x_train,y_train,tfidf_vect = train(train_var,train_text)
-
+	# print gene,mutation
 	x_test = test(tfidf_vect,test_var,test_text)
-	# x=0
 
-	classifier(x_train,y_train,x_test)
-
-
+	# classifier(x_train,y_train,x_test)
 
 main ()
