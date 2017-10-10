@@ -31,10 +31,10 @@ def train(train_var,train_text):
 		
 		i.pop(-1)
 		i.pop(0)
+		foo+=1
 
 		# i.append(train_text[foo][-1].split(" "))
 
-		foo+=1
 		x.append(str(i))
 		# x.append(str(train_text[foo][-1].split(" ")))
 
@@ -57,6 +57,7 @@ def test(tfidf_vect,arr,arr2):
 	x = []
 
 	for i in arr:
+		i.pop(0)
 		i.append(arr2[-1])
 		x.append(str(i))
 

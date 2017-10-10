@@ -27,16 +27,18 @@ def train(train_var,train_text):
 	foo = 0
 
 	for i in train_var:
-		y.append(str(i[-1]))
+		y.append((i[-1]))
 		
-		i.pop(-1)
-		i.pop(0)
+		# i.pop(-1)
+		# i.pop(0)
 
-		i.append(train_text[foo][-1].split(" "))
+		# i.append(train_text[foo][-1].split(" "))
+
+		x.append(train_text[foo][-1])
+
+		# x.append(str(train_text[foo][-1].split(" ")))
 
 		foo+=1
-		x.append(str(i))
-		# x.append(str(train_text[foo][-1].split(" ")))
 
 	# print x[0]
 	# print y[0]
@@ -48,25 +50,65 @@ def train(train_var,train_text):
 
 	X_train = tfidf_vect.fit_transform(x)
 
+	new_x = []
+
+	foo = 0
+
+	for i in train_var:
+		i.pop(-1)
+		i.pop(0)
+
+		i.append(str((X_train[foo][0,:]).toarray().tolist()))
+
+
+		
+		for k in i:
+			print type(k)
+		foo+=1
+
+		new_x.append(i)
+
+		break
+
 	# X_train_tf = tf_transformer.transform(matrix1)
 	# X_train_tfidf.shape
-	return X_train,y,tfidf_vect
+	return new_x,y,tfidf_vect
 
 
-def test(tfidf_vect,arr,arr2):
+def test(tfidf_vect,test_var,test_text):
 	x = []
 
 	foo = 0
 
 
-	for i in arr:
+	for i in test_var:
+
+		# i.pop(0)
+
+		# i.append()
+		# print i
 		# i.append(arr2[foo][-1])
 		# x.append(str(i))
-		x.append(arr2[foo][-1])
+		x.append(test_text[foo][-1])
+		foo+=1
+		# break
+
+	x=  tfidf_vect.transform(x)
+
+
+	new_x = []
+
+	foo = 0
+
+	for i in test_var:
+		i.pop(0)
+
+		i.append(str(x[foo]))
+
+		new_x.append(i)
 		foo+=1
 
-	return tfidf_vect.transform(x)
-
+	return new_x
 
 
 def classifier(train_1,train_2,test):
@@ -83,9 +125,11 @@ def classifier(train_1,train_2,test):
 	# 			print train_1[i][j]
 			# print train_1[i][j]
 	# clf = svm.LinearSVC()
-	for i in range(len(train_2)):
-		train_2[i]=int(train_2[i])
+	# for i in range(len(train_2)):
+	# 	train_2[i]=int(train_2[i])
 	# print train_1
+
+	# print (train_1[0][-1])
 	clf.fit(train_1,train_2)
 	# print "hey"
 	# arr = clf.predict(test)
