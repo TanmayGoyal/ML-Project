@@ -9,6 +9,7 @@ from sklearn import svm, datasets
 from sklearn.datasets import fetch_20newsgroups
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.decomposition import PCA
+from sklearn.decomposition import TruncatedSVD
 from sklearn.pipeline import Pipeline
 import matplotlib.pyplot as plt
 
@@ -19,12 +20,24 @@ def graph(X,Y):
 	# pipeline = Pipeline([('vect', CountVectorizer()),('tfidf', TfidfTransformer()),])
 	# X = pipeline.fit_transform(newsgroups_train.data).todense()
 	print X.shape
-	X=X.todense()
+	# X=X.todense()
 	print X.shape
-	pca = PCA(n_components=2).fit(X)
+	pca = TruncatedSVD(n_components=2).fit(X)
 	data2D = pca.transform(X)
-	print data2D
-	plt.scatter(data2D[:,0], data2D[:,1],c=Y)
+	# print data2D
+	f=[]
+	# print data2D[:,0]
+	for i in range(len(data2D[:,0])):
+		f.append(data2D[:,0][i]*100)
+
+	g=[]
+	for i in range(len(data2D[:,1])):
+		g.append(data2D[:,1][i])
+
+	# print f
+	# print g
+	print len(Y)
+	plt.scatter(f,g,c=Y,alpha=0.5)
 	plt.colorbar(ticks=range(10))
 	# plt.show()              #not required if using ipython notebook
 	plt.savefig("graph.png")
@@ -116,8 +129,10 @@ def main ():
 	test_var = get_file_data('stage2_test_variants.csv',',')
 
 
-	graph(x_train,y_train)
 	x_train,y_train,tfidf_vect = train(train_var,train_text)
+	graph(x_train,y_train)
+	# print x_train.shape
+	# print len(y_train)
 	# print gene,mutation
 	x_test = test(tfidf_vect,test_var,test_text)
 
